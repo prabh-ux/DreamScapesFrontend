@@ -345,7 +345,8 @@ const Editor = () => {
                           rotatable
                           throttleDrag={0}
                           renderDirections={["nw", "ne", "sw", "se", "n", "s", "e", "w"]}
-
+ minWidth={30}
+  minHeight={30}
                           onDrag={({ target, left, top }) => {
                             target.style.left = `${left}px`;
                             target.style.top = `${top}px`;
