@@ -145,17 +145,14 @@ const Editor = () => {
 
 
 
-  const deleteImage = () => {
-    if (!Array.isArray(droppedImages)) return;
-    if (!selectedElement) return;
-    const filteredImages = droppedImages.filter(item => item.id !== selectedElement.id);
-    dispatchUpdatedArray(filteredImages);
-    setselectedElement(null);
+  // 2. In your deleteImage(), also clear out the old selectedElement
+const deleteImage = () => {
+  if (!selectedElement) return;
+  const filtered = droppedImages.filter(i => i.id !== selectedElement.id);
+  dispatch(setLayers(filtered));
+  setselectedElement(null);        // reset your selection
+};
 
-    if (activePanel === "Delete") {
-      setTimeout(() => setActivePanel(null), 200);
-    }
-  };
 
 
 
@@ -163,7 +160,7 @@ const Editor = () => {
 
     const category = getScreenSize();
     let max = 500;
-    
+
     switch (category) {
       case "small":
         max = 300;
@@ -240,192 +237,208 @@ const Editor = () => {
   const addImageToCanvas = (x, y, imageSrc) => {
     pastRef.current.push([...droppedImages]);
     const updatedArray = [...droppedImages, {
-      id: Date.now(), x, y, imageSrc, type: "image",
+      id: Date.now() + Math.random() // simple unique‐enough key
+
+      , x, y, imageSrc, type: "image",
       editSettings: {
-        whiteBalance: [],
-        light: [],
-        color: [],
-        texture: [],
-        opacity: 100,
-      }
+      whiteBalance: [],
+      light: [],
+      color: [],
+      texture: [],
+      opacity: 100,
+    }
 
 
     }];
-    futureRef.current = [];
-    dispatchUpdatedArray(updatedArray);
+  futureRef.current = [];
+  dispatchUpdatedArray(updatedArray);
 
-  }
-  const addTextToCanvas = (x, y, text) => {
-    pastRef.current.push([...droppedImages]);
-   
-
-    const updatedArray = [...droppedImages, {
-      id: Date.now(), x, y, text, type: "text",
-      settings: {
-        color: droppedTextSettings.color,
-        stroke: droppedTextSettings.stroke,
-        size: droppedTextSettings.size,
-        shadow: droppedTextSettings.shadow,
-        opacity: droppedTextSettings.opacity,
-        ShadowColor: droppedTextSettings.ShadowColor,
-        LineHeight: droppedTextSettings.LineHeight
-      }, editSettings: {
-        whiteBalance: [],
-        light: [],
-        color: [],
-        texture: [],
-      }
+}
+const addTextToCanvas = (x, y, text) => {
+  pastRef.current.push([...droppedImages]);
 
 
-
-    }];
-
-    dispatchUpdatedArray(updatedArray);
-    futureRef.current = [];
-  }
-
-  const handleImageDrop = (e) => {
-    const imageSrc = e.dataTransfer.getData("ImageSrc");
-
-    if (!imageSrc) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    addImageToCanvas(x, y, imageSrc);
-
-
-  }
-
-
-  return (
-    <div className={`p-[1rem] flex flex-col overflow-x-hidden `}>
-
-      <ToolBoxMd setBgColor={setBgColor} activePanel2={activePanel2} setActivePanel2={setActivePanel2} DesignRef={DesignRef} />
-
-
-      {/* maindiv */}
-      <div className='flex items-center overflow-x-hidden' >
-
-        {/* <bigToolbox div */}
-        <BigToolBox bgColor={bgColor} pastRef={pastRef} futureRef={futureRef} activePanel={activePanel} activePanel2={activePanel2} setActivePanel={setActivePanel} setActivePanel2={setActivePanel2} />
-
-        <div className='flex flex-col w-full ' >
-
-          {/* smalltool box and canvas div */}
-          <div className='w-full flex flex-col  max-h-[45rem] overflow-x-auto ' >
-
-            {/* smallToolBox */}
-            <SmallToolBox setBgColor={setBgColor} activePanel2={activePanel2} setActivePanel2={setActivePanel2} DesignRef={DesignRef} />
-
-            {/* canvas */}
-            <div className='h-screen  flex  justify-center  overflow-hidden '>
-
-              {/* scrollable wrapper */}
-              <div className={` flex flex-col gap-[1rem] ${activeCanvas.length <= 1 ? "justify-center" : "justify-normal"}  items-center `}>
-
-                <div ref={editorRef} id="editorContainer" className='flex flex-col gap-[1rem] justify-center items-center CanvasHolder'>
-
-                  {activeCanvas.map((canvasIndex) => {
-
-                    return <div key={canvasIndex}
-                      onMouseDown={(e) => { if (e.target.tagName !== "IMG" && e.target.tagName !== "P") setselectedElement(null) }}
-                      style={{
-                        width: `${canvasSize.width}px`,
-                        height: `${canvasSize.height}px`,
-                      }} onClick={() => setSelectedCanavs(canvasIndex)}
-                      onDragOver={(e) => e.preventDefault()}
-                      onDrop={handleImageDrop}
-                      className='relative overflow-hidden '>
-
-                      {moveableTarget && (
-                        < Moveable target={moveableTarget}
-                          draggable
-                          resizable
-                          rotatable
-                          throttleDrag={0}
-                          renderDirections={["nw", "ne", "sw", "se", "n", "s", "e", "w"]}
-
-                          onDrag={({ target, left, top }) => {
-                            target.style.left = `${left}px`;
-                            target.style.top = `${top}px`;
-
-                            if (selectedElement) {
-                              const updated = droppedImages.map((item) =>
-                                item.id === selectedElement.id
-                                  ? { ...item, x: left, y: top }
-                                  : item
-                              );
-                              dispatch(setLayers(updated));
-                            }
-                          }}
-
-                          onResize={({ target, width, height }) => {
-                            target.style.width = `${width}px`;
-                            target.style.height = `${height}px`;
-
-                          }}
-                          onRotate={({ target, beforeRotate }) => {
-                            target.style.transform = `rotate(${beforeRotate}deg)`
-                          }}
-                        />)}
+  const updatedArray = [...droppedImages, {
+    id: Date.now(), x, y, text, type: "text",
+    settings: {
+      color: droppedTextSettings.color,
+      stroke: droppedTextSettings.stroke,
+      size: droppedTextSettings.size,
+      shadow: droppedTextSettings.shadow,
+      opacity: droppedTextSettings.opacity,
+      ShadowColor: droppedTextSettings.ShadowColor,
+      LineHeight: droppedTextSettings.LineHeight
+    }, editSettings: {
+      whiteBalance: [],
+      light: [],
+      color: [],
+      texture: [],
+    }
 
 
 
-                      {/* bgcanvas */}
-                      {droppedImages.map((item) => {
+  }];
 
-                        const appliedFilter = PercentageToCssFilter(item.editSettings);
-                        if (item.type === "image") {
-                          return <div key={item.id}>
+  dispatchUpdatedArray(updatedArray);
+  futureRef.current = [];
+}
 
-                            <img
-                              onClick={() => {
-                                setselectedElement(item),
-                                  dispatch(updateEditSetting({
-                                    selectedElement: item,
-                                    edit: { ...item.editSettings }
-                                  }));
-                              }}
-                              ref={(ref) => (imageRef.current[item.id] = ref)}
+const handleImageDrop = (e) => {
+  const imageSrc = e.dataTransfer.getData("ImageSrc");
 
-                              src={item.imageSrc}
-                              style={{
-                                position: "absolute",
-                                top: `${item.y}px`,
-                                left: `${item.x}px`,
-                                width: '300px',
-                                userSelect: "none",
-                                outline: "none",
-                                filter: appliedFilter,
-                                opacity: item.editSettings.opacity / 100
-                              }}
-                              className='cursor-move z-5 '
-                            >
-                            </img>
-                          </div>
-                        }
-                        if (item.type === "text") {
-                          const isEditing = textEditing === item.id;
-                          return <p
-                            contentEditable={isEditing} suppressContentEditableWarning={isEditing}
+  if (!imageSrc) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  addImageToCanvas(x, y, imageSrc);
+
+
+}
+
+
+return (
+  <div className={`p-[1rem] flex flex-col overflow-x-hidden `}>
+
+    <ToolBoxMd setBgColor={setBgColor} activePanel2={activePanel2} setActivePanel2={setActivePanel2} DesignRef={DesignRef} />
+
+
+    {/* maindiv */}
+    <div className='flex items-center overflow-x-hidden' >
+
+      {/* <bigToolbox div */}
+      <BigToolBox bgColor={bgColor} pastRef={pastRef} futureRef={futureRef} activePanel={activePanel} activePanel2={activePanel2} setActivePanel={setActivePanel} setActivePanel2={setActivePanel2} />
+
+      <div className='flex flex-col w-full ' >
+
+        {/* smalltool box and canvas div */}
+        <div className='w-full flex flex-col  max-h-[45rem] overflow-x-auto ' >
+
+          {/* smallToolBox */}
+          <SmallToolBox setBgColor={setBgColor} activePanel2={activePanel2} setActivePanel2={setActivePanel2} DesignRef={DesignRef} />
+
+          {/* canvas */}
+          <div className='h-screen  flex  justify-center  overflow-hidden '>
+
+            {/* scrollable wrapper */}
+            <div className={` flex flex-col gap-[1rem] ${activeCanvas.length <= 1 ? "justify-center" : "justify-normal"}  items-center `}>
+
+              <div ref={editorRef} id="editorContainer" className='flex flex-col gap-[1rem] justify-center items-center CanvasHolder'>
+
+                {activeCanvas.map((canvasIndex) => {
+
+                  return <div key={canvasIndex}
+                    onMouseDown={(e) => { if (e.target.tagName !== "IMG" && e.target.tagName !== "P") setselectedElement(null) }}
+                    style={{
+                      width: `${canvasSize.width}px`,
+                      height: `${canvasSize.height}px`,
+                    }} onClick={() => setSelectedCanavs(canvasIndex)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={handleImageDrop}
+                    className='relative overflow-hidden '>
+
+                    {moveableTarget && (
+                      < Moveable target={moveableTarget}
+                        draggable
+                        resizable
+                        rotatable
+                        throttleDrag={0}
+                        renderDirections={["nw", "ne", "sw", "se", "n", "s", "e", "w"]}
+
+                        onDrag={({ target, left, top }) => {
+                          target.style.left = `${left}px`;
+                          target.style.top = `${top}px`;
+
+                          if (selectedElement) {
+                            const updated = droppedImages.map((item) =>
+                              item.id === selectedElement.id
+                                ? { ...item, x: left, y: top }
+                                : item
+                            );
+                            dispatch(setLayers(updated));
+                          }
+                        }}
+
+                        onResize={({ target, width, height }) => {
+                          target.style.width = `${width}px`;
+                          target.style.height = `${height}px`;
+
+                        }}
+                        onRotate={({ target, beforeRotate }) => {
+                          target.style.transform = `rotate(${beforeRotate}deg)`
+                        }}
+                      />)}
+
+
+
+                    {/* bgcanvas */}
+                    {droppedImages.map((item) => {
+
+                      const appliedFilter = PercentageToCssFilter(item.editSettings);
+                      if (item.type === "image") {
+                        return <div key={item.id}>
+
+                          <img
                             onClick={() => {
-                              setselectedElement(item);
-                              dispatch(updateTextSettings({
-                                color: item.settings.color,
-                                stroke: item.settings.stroke,
-                                size: item.settings.size,
-                                shadow: item.settings.shadow,
-                                opacity: item.settings.opacity,
-                                ShadowColor: item.settings.ShadowColor,
-                                LineHeight: item.settings.LineHeight,
-                              }));
+                              setselectedElement(item),
+                                dispatch(updateEditSetting({
+                                  selectedElement: item,
+                                  edit: { ...item.editSettings }
+                                }));
+                            }}
+                            ref={(ref) => (imageRef.current[item.id] = ref)}
 
-                            }
-                            }
-                            ref={(ref) => (textRef.current[item.id] = ref)} key={item.id}
+                            src={item.imageSrc}
+                            style={{
+                              position: "absolute",
+                              top: `${item.y}px`,
+                              left: `${item.x}px`,
+                              width: '300px',
+                              userSelect: "none",
+                              outline: "none",
+                              filter: appliedFilter,
+                              opacity: item.editSettings.opacity / 100
+                            }}
+                            className='cursor-move z-5 '
+                          >
+                          </img>
+                        </div>
+                      }
+                      if (item.type === "text") {
+                        const isEditing = textEditing === item.id;
+                        return <p
+                          contentEditable={isEditing} suppressContentEditableWarning={isEditing}
+                          onClick={() => {
+                            setselectedElement(item);
+                            dispatch(updateTextSettings({
+                              color: item.settings.color,
+                              stroke: item.settings.stroke,
+                              size: item.settings.size,
+                              shadow: item.settings.shadow,
+                              opacity: item.settings.opacity,
+                              ShadowColor: item.settings.ShadowColor,
+                              LineHeight: item.settings.LineHeight,
+                            }));
 
-                            onDoubleClick={(e) => {
+                          }
+                          }
+                          ref={(ref) => (textRef.current[item.id] = ref)} key={item.id}
+
+                          onDoubleClick={(e) => {
+                            setselectedElement(null);
+                            setTextEditing(item.id);
+
+                            setTimeout(() => {
+                              e.target.focus();
+                              document.execCommand("selectAll", false, null);
+                            }, 0);
+                          }}
+
+                          onTouchEnd={(e) => {
+                            const now = Date.now();
+                            if (now - lastTapRef.current < 300) {
+
+
                               setselectedElement(null);
                               setTextEditing(item.id);
 
@@ -433,126 +446,112 @@ const Editor = () => {
                                 e.target.focus();
                                 document.execCommand("selectAll", false, null);
                               }, 0);
-                            }}
+                            }
+                            lastTapRef.current = now;
+                          }}
+                          onBlur={() => {
+                            setTextEditing(null);
 
-                            onTouchEnd={(e) => {
-                              const now = Date.now();
-                              if (now - lastTapRef.current < 300) {
+                          }}
 
+                          style={{
+                            filter: appliedFilter,
+                            userSelect: 'none', left: `${item.x}px`, top: `${item.y}px`, position: 'absolute',
+                            color: `${item.settings.color}`, opacity: `${item.settings.opacity}%`, textShadow: `${item.settings.shadow}px ${item.settings.shadow}px ${item.settings.shadow / 2}px ${item.settings.ShadowColor}`
+                            , fontSize: `${item.settings.size}px`, fontWeight: Math.min(item.settings.stroke * 10, 900)
+                          }} className={`${isEditing && 'outline-[0.1rem] outline-amber-500'}  z-5 cursor-${textEditing ? "text" : "move"} `} >{item.text}</p>
 
-                                setselectedElement(null);
-                                setTextEditing(item.id);
-
-                                setTimeout(() => {
-                                  e.target.focus();
-                                  document.execCommand("selectAll", false, null);
-                                }, 0);
-                              }
-                              lastTapRef.current=now;
-                            }}
-                            onBlur={() => {
-                              setTextEditing(null);
-
-                            }}
-
-                            style={{
-                              filter: appliedFilter,
-                              userSelect: 'none', left: `${item.x}px`, top: `${item.y}px`, position: 'absolute',
-                              color: `${item.settings.color}`, opacity: `${item.settings.opacity}%`, textShadow: `${item.settings.shadow}px ${item.settings.shadow}px ${item.settings.shadow / 2}px ${item.settings.ShadowColor}`
-                              , fontSize: `${item.settings.size}px`, fontWeight: Math.min(item.settings.stroke * 10, 900)
-                            }} className={`${isEditing && 'outline-[0.1rem] outline-amber-500'}  z-5 cursor-${textEditing ? "text" : "move"} `} >{item.text}</p>
-
-                        }
+                      }
 
 
 
-                      })}
+                    })}
 
 
 
 
-                      <canvas width={canvasSize.width}
-                        height={canvasSize.height} style={{
+                    <canvas width={canvasSize.width}
+                      height={canvasSize.height} style={{
 
-                          backgroundImage: showGrid
-                            ? `linear-gradient(to right,#ccc 1px,transparent 1px),
+                        backgroundImage: showGrid
+                          ? `linear-gradient(to right,#ccc 1px,transparent 1px),
                           linear-gradient(to bottom,#ccc 1px, transparent 1px )`: "none",
-                          backgroundSize: `20px 20px`,
-                          position: "absolute", top: 0, left: 0, zIndex: 0,
-                          backgroundColor: `${bgColor}`
+                        backgroundSize: `20px 20px`,
+                        position: "absolute", top: 0, left: 0, zIndex: 0,
+                        backgroundColor: `${bgColor}`
 
-                        }}
+                      }}
 
-                        className={`bg-white cursor-pointer   `} >
+                      className={`bg-white cursor-pointer   `} >
 
-                      </canvas>
+                    </canvas>
 
 
-                      {/* drawing canvas */}
-                      <canvas width={canvasSize.width}
-                        height={canvasSize.height} onClick={() => setSelectedCanavs(canvasIndex)} style={{
-                          backgroundImage: showGrid
-                            ? `linear-gradient(to right,#ccc 1px,transparent 1px),
+                    {/* drawing canvas */}
+                    <canvas width={canvasSize.width}
+                      height={canvasSize.height} onClick={() => setSelectedCanavs(canvasIndex)} style={{
+                        backgroundImage: showGrid
+                          ? `linear-gradient(to right,#ccc 1px,transparent 1px),
                           linear-gradient(to bottom,#ccc 1px, transparent 1px )`: "none",
-                          backgroundSize: `20px 20px`,
-                          position: "absolute", top: 0, left: 0, zIndex: 6,
-                          touchAction: "none"
-                        }}
-                        onPointerDown={(e) => {
-                          if (activePanel2 !== "Design") return;
+                        backgroundSize: `20px 20px`,
+                        position: "absolute", top: 0, left: 0, zIndex: 6,
+                        touchAction: "none"
+                      }}
+                      onPointerDown={(e) => {
+                        if (activePanel2 !== "Design") return;
 
-                          e.preventDefault();
-                          const canvasEl = e.currentTarget;
-                          canvasEl.setPointerCapture(e.pointerId);           // ← capture
-                          DesignRef.current?.startDraw(e, canvasEl);
-                        }}
-                        onPointerMove={(e) => {
-                          if (activePanel2 !== "Design") return;
+                        e.preventDefault();
+                        const canvasEl = e.currentTarget;
+                        canvasEl.setPointerCapture(e.pointerId);           // ← capture
+                        DesignRef.current?.startDraw(e, canvasEl);
+                      }}
+                      onPointerMove={(e) => {
+                        if (activePanel2 !== "Design") return;
 
-                          e.preventDefault();
-                          DesignRef.current?.draw(e, e.currentTarget);
-                        }}
-                        onPointerUp={(e) => {
-                          if (activePanel2 !== "Design") return;
-                          e.preventDefault();
-                          const canvasEl = e.currentTarget;
-                          DesignRef.current?.endDraw(e, canvasEl);
-                          canvasEl.releasePointerCapture(e.pointerId);       // ← release
-                        }}
-                        onPointerCancel={(e) => {
-                          if (activePanel2 !== "Design") return;
-                          e.currentTarget.releasePointerCapture(e.pointerId);
-                          DesignRef.current?.endDraw(e, e.currentTarget);
-                        }}
+                        e.preventDefault();
+                        DesignRef.current?.draw(e, e.currentTarget);
+                      }}
+                      onPointerUp={(e) => {
+                        if (activePanel2 !== "Design") return;
+                        e.preventDefault();
+                        const canvasEl = e.currentTarget;
+                        DesignRef.current?.endDraw(e, canvasEl);
+                        canvasEl.releasePointerCapture(e.pointerId);       // ← release
+                      }}
+                      onPointerCancel={(e) => {
+                        if (activePanel2 !== "Design") return;
+                        e.currentTarget.releasePointerCapture(e.pointerId);
+                        DesignRef.current?.endDraw(e, e.currentTarget);
+                      }}
 
-                        className={`bg-transparent  ${activePanel2 === "Design" ? " cursor-pointer pointer-events-auto " : "pointer-events-none"}  `} >
+                      className={`bg-transparent  ${activePanel2 === "Design" ? " cursor-pointer pointer-events-auto " : "pointer-events-none"}  `} >
 
-                      </canvas>
+                    </canvas>
 
-                    </div>
+                  </div>
 
-                  })}
+                })}
 
-
-
-                </div>
 
 
               </div>
 
+
             </div>
 
-
-
           </div>
+
+
+
         </div>
       </div>
-
-      {/* bottom tools div */}
-      <BottomToolBox activeCanvas={activeCanvas} dividerX={dividerX} setDividerX={setDividerX} showGrid={showGrid} setShowGrid={setShowGrid} />
-
     </div>
-  )
+
+    {/* bottom tools div */}
+    <BottomToolBox activeCanvas={activeCanvas} dividerX={dividerX} setDividerX={setDividerX} showGrid={showGrid} setShowGrid={setShowGrid} />
+
+  </div>
+)
 
 }
 export default Editor
