@@ -3,7 +3,7 @@ import './App.css'
 import Create from './assets/header/Components/Create'
 import Header from './assets/header/header'
 import Saved from './assets/header/Components/Saved';
-import Gallery from './assets/header/Components/Gallery';
+import Gallery from './assets/header/Components/Gallery.jsx';
 import Songs from './assets/header/Components/Songs';
 import Login from './assets/header/Components/Auth/Login';
 import { Route, Routes } from 'react-router-dom';
