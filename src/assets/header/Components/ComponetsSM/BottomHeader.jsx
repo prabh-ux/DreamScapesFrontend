@@ -15,7 +15,7 @@ const BottomHeader = ({ setOpenSavedProjects, setCreateNewOpen, setOpenGallery }
     useEffect(() => {
         const ControlBottomHeader = () => {
 
-            if (typeof window !== 'undefinded') {
+            if (typeof window !== 'undefined') {
 
                 if (window.scrollY <= LastScrollY) {
                     setIsVisible(false);
