@@ -16,6 +16,9 @@ import Editor from './assets/pages/Editor/Editor';
 import { useEffect } from 'react';
 import RefereshHandler from './assets/RefereshHandler';
 import { Navigate } from 'react-router-dom';
+import axios from 'axios';
+import loading from './loading.gif'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function App() {
   const [createNewOpen, setCreateNewOpen] = useState(false);
@@ -26,6 +29,7 @@ function App() {
   const [openSignup, setOpenSignup] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
   const isToggle = useSelector((state) => state.theme.darkMode);
+  const [isLoading, setIsLoading] = useState(false);
   const gradientClass = isToggle
     ? 'from-[#3a0d3c] from-25% via-[#351b35] via-52% to-[#2e282e] to-88%'
     : 'from-[#A67CB4] from-25% via-[#B493AD] via-52% to-[#B4B4B4] to-88%';
@@ -34,6 +38,16 @@ function App() {
   //    const PrivateRouting=({children})=>{
   //     return isAuthenticated?children:<Navigate to="/" />
   //    }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  useEffect(() => {
+    setIsLoading(true);
+    axios.get(`${backendUrl}/ping`)
+    .catch(() => {})
+   .finally(()=>setIsLoading(false)) ;
+
+  }, [])
+
 
 
   useEffect(() => {
@@ -55,7 +69,13 @@ function App() {
 
   }, [])
 
-  return (
+  return (isLoading ? <div className={`min-h-screen bg-gradient-to-b ${gradientClass} bg-[#351b35] flex justify-center items-center`}>
+ <DotLottieReact
+      src="https://lottie.host/55bec8c2-e4a4-4849-b335-b78d856b7148/ZeVTFlN1Es.lottie"
+      loop
+      autoplay
+    /> </div>
+    :
     <div className={`min-h-screen bg-gradient-to-b ${gradientClass} relative  bg-[#351b35] `}>
 
 

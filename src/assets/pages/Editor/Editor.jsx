@@ -145,7 +145,6 @@ const Editor = () => {
 
 
 
-  // 2. In your deleteImage(), also clear out the old selectedElement
 const deleteImage = () => {
   if (!selectedElement) return;
   const filtered = droppedImages.filter(i => i.id !== selectedElement.id);
