@@ -1,12 +1,3 @@
-# React + Vite
-
-Here’s a **clean, professional GitHub project description** for your **DreamScapes – Web Based Photo Editor** frontend repo.
-
-You can paste this directly into your **README.md** on GitHub 👇
-(If you want, I can also format it with badges, screenshots, or a full README layout.)
-
----
-
 # 🌌 DreamScapes – Web Based Photo Editor
 
 A full-stack **MERN-based creative photo editing platform** that allows users to upload, edit, enhance, and manage images directly in the browser. DreamScapes delivers a smooth, Canva-like editing experience built with **React**, **Canvas API**, and a secure **Node.js + Express + MongoDB** backend.
