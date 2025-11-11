@@ -1,12 +1,74 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Here’s a **clean, professional GitHub project description** for your **DreamScapes – Web Based Photo Editor** frontend repo.
 
-Currently, two official plugins are available:
+You can paste this directly into your **README.md** on GitHub 👇
+(If you want, I can also format it with badges, screenshots, or a full README layout.)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+# 🌌 DreamScapes – Web Based Photo Editor
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+A full-stack **MERN-based creative photo editing platform** that allows users to upload, edit, enhance, and manage images directly in the browser. DreamScapes delivers a smooth, Canva-like editing experience built with **React**, **Canvas API**, and a secure **Node.js + Express + MongoDB** backend.
+
+🔗 **Live Demo:** [https://dream-scapes-frontend.vercel.app/](https://dream-scapes-frontend.vercel.app/)
+🔗 **Backend Repo:** [https://github.com/prabh-ux/DreamScapesBackend](https://github.com/prabh-ux/DreamScapesBackend)
+
+---
+
+## ✨ Features
+
+### 🔐 Authentication & Security
+
+* JWT-based secure authentication
+* Password hashing with **bcrypt**
+* Protected user routes & project data
+
+### 🖼️ Creative Photo Editing
+
+* Upload, edit, manage, and download images
+* Layer-based editing with move, resize, rotate & delete controls
+* Customizable **text**, **stickers**, and **shapes**
+* Drawing tools with brush size & color adjustments
+* Crop, resize, and apply filters/adjustments using **Canvas API**
+* Undo/Redo system for smooth workflow
+* Search & import images directly from the built-in search panel
+
+### 📁 Project Management
+
+* Save, update, and delete user projects/collections (CRUD)
+* Fast project loading from MongoDB
+* Cloud-optimized UI with responsive layout
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+
+* React
+* Canvas API
+* Tailwind CSS
+* JavaScript
+* Vercel (Deployment)
+
+**Backend (MERN):**
+
+* Node.js
+* Express
+* MongoDB
+* JWT
+* bcrypt
+
+---
+
+## ⭐ Highlights
+
+* Modern, responsive UI optimized for desktop & mobile
+* Performance-optimized canvas rendering
+* Real-time editing with smooth animations
+* Clean MERN architecture with separate backend repo
+* Built with beginner-friendly yet production-ready code practices
+
+---
+
