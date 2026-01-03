@@ -69,37 +69,61 @@ function App() {
 
   }, [])
 
- return (
-  <div className={`min-h-screen bg-gradient-to-b ${gradientClass} relative bg-[#351b35]`}>
-    
-    {/* 1. Subtle Loading Bar (Only shows when Render is waking up) */}
+  return (
+    <div className={`min-h-screen bg-gradient-to-b ${gradientClass} relative bg-[#351b35]`}>
+  {/* 1. Subtle Loading Bar (Only shows when Render is waking up) */}
     {isLoading && (
       <div className="fixed top-0 left-0 w-full h-1 z-[9999] bg-blue-500 animate-pulse">
         <div className="h-full bg-white w-1/3 animate-[loading_2s_infinite]"></div>
       </div>
     )}
 
-    <Header setOpenLogin={setOpenLogin} setOpenSongs={setOpenSongs} setCreateNewOpen={setCreateNewOpen} setOpenSavedProjects={setOpenSavedProjects} setOpenGallery={setOpenGallery} />
-    
-    <BottomHeader setOpenSavedProjects={setOpenSavedProjects} setCreateNewOpen={setCreateNewOpen} setOpenGallery={setOpenGallery} />
 
-    {/* ... your other components (Create, Saved, etc.) ... */}
+      <Header setOpenLogin={setOpenLogin} setOpenSongs={setOpenSongs} setCreateNewOpen={setCreateNewOpen} setOpenSavedProjects={setOpenSavedProjects} setOpenGallery={setOpenGallery}></Header>
+      {/* bottom header */}
+      <BottomHeader setOpenSavedProjects={setOpenSavedProjects} setCreateNewOpen={setCreateNewOpen} setOpenGallery={setOpenGallery}  ></BottomHeader>
 
-    <Routes>
-      <Route path='/' element={<Home setCreateNewOpen={setCreateNewOpen} setOpenLogin={setOpenLogin} />} />
-      <Route path='/editor' element={<Editor />} />
-    </Routes>
+      {/* create new pop window */}
+      {createNewOpen && <Create setCreateNewOpen={setCreateNewOpen} isToggle={isToggle}  ></Create>}
 
-    <Footer setOpenLogin={setOpenLogin} />
-    
-    {/* 2. Optional: A small "Wake up" notification in the corner */}
+      {/* saved projects pop up window */}
+      {openSavedProjects && <Saved setOpenSavedProjects={setOpenSavedProjects} isToggle={isToggle}></Saved>}
+
+
+      {/* gallery pop up window */}
+      {openGallery && <Gallery setOpenGallery={setOpenGallery} isToggle={isToggle}></Gallery>}
+
+      {/* songs pop up window */}
+      {openSongs && <Songs setOpenSongs={setOpenSongs} isToggleMode={isToggle}></Songs>}
+
+      {/* login pop up window  */}
+      {openLogin && <Login openLogout={openLogout} setOpenLogout={setOpenLogout} setOpenSignup={setOpenSignup} setOpenLogin={setOpenLogin} isToggle={isToggle}></Login>}
+
+      {/* signup pop up window */}
+      {openSignup && <SignUp openLogout={openLogout} setOpenLogout={setOpenLogout} setOpenSignup={setOpenSignup} setOpenLogin={setOpenLogin} isToggle={isToggle} />}
+
+
+      {/* home page */}
+
+
+      {/* <RefereshHandler setIsAuthenticated={setIsAuthenticated} /> */}
+      <Routes>
+        <Route path='/' element={<Home setCreateNewOpen={setCreateNewOpen} setOpenLogin={setOpenLogin} />} />
+        <Route path='/editor' element={<Editor />} />
+      </Routes>
+
+      <Footer setOpenLogin={setOpenLogin} />
+      {/* 2. Optional: A small "Wake up" notification in the corner */}
     {isLoading && (
       <div className="fixed bottom-5 right-5 bg-black/50 text-white text-xs p-2 rounded shadow-lg">
         Waking up server... (Render Free Tier)
       </div>
     )}
-  </div>
-);
+ 
+    </div>
+
+
+  )
 }
 
 export default App
