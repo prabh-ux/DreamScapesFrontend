@@ -1,0 +1,20 @@
+@keyframes rainbowFlow {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: 0% 0;
+    }
+}
+
+.rainbow-bar {
+    background:#C57D1B;
+   transition: background-position 0.5s ease-in-out;
+}
+
+button:hover+.rainbow-bar{
+  background: linear-gradient(270deg,red,orange,yellow,green,blue,indigo,violet);
+    background-size: 400% 100%;
+    animation: rainbowFlow 2s linear infinite;
+}
